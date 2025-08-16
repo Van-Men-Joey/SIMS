@@ -1,1 +1,2 @@
 Build a system to manage student information, courses, scores and assignment submission. The system supports multiple roles (Admin, Faculty, Student) with different permissions, provides a friendly web interface, integrates course management, registration, grading and report export functions.
+<img width="2132" height="1333" alt="image" src="https://github.com/user-attachments/assets/bc5d934b-46f9-44ca-aaf4-76379e0cc20b" />
