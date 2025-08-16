@@ -1,0 +1,227 @@
+﻿@page
+@model SIMS.Pages.Admin.DashboardModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "_LayoutAdmin";
+}
+<div class="container-fluid px-4 mt-4">
+    <!-- Quick Actions -->
+    <div class="mb-4">
+        <h3>Quick Actions</h3>
+        <a asp-page="/Admin/Users/Create" class="btn btn-primary me-2">
+            <i class="fas fa-user-plus"></i> Add User
+        </a>
+        <a asp-page="/Admin/Courses/Create" class="btn btn-success me-2">
+            <i class="fas fa-plus-circle"></i> Add Course
+        </a>
+       @*  <a asp-page="/Admin/Reports/Index" class="btn btn-info me-2">
+            <i class="fas fa-file-alt"></i> View Reports
+        </a> *@
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Users</h5>
+                    <h2>@Model.TotalUsers</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Courses</h5>
+                    <h2>@Model.TotalCourses</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Enrollments</h5>
+                    <h2>@Model.TotalEnrollments</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-danger h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Assignments</h5>
+                    <h2>@Model.TotalAssignments</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar me-1"></i> Students per Course
+                </div>
+                <div class="card-body">
+                    <canvas id="studentsChart" width="100%" height="40"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="fas fa-tasks me-1"></i> Assignments per Course
+                </div>
+                <div class="card-body">
+                    <canvas id="assignmentsChart" width="100%" height="40"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="fas fa-file-upload me-1"></i> Submissions per Assignment
+                </div>
+                <div class="card-body">
+                    <canvas id="submissionsChart" width="100%" height="40"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="fas fa-chart-line me-1"></i> Average Score per Assignment
+                </div>
+                <div class="card-body">
+                    <canvas id="avgScoreChart" width="100%" height="40"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="fas fa-calendar-alt me-1"></i> Enrollments Over Time (Last 12 Months)
+                </div>
+                <div class="card-body">
+                    <canvas id="enrollmentsOverTimeChart" width="100%" height="40"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="fas fa-doughnut-chart me-1"></i> Top 5 Courses by Enrollment
+                </div>
+                <div class="card-body">
+                    <canvas id="topCoursesChart" width="100%" height="40"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Students per Course - Bar chart
+        new Chart(document.getElementById("studentsChart").getContext("2d"), {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.StudentsPerCourseLabels)),
+                datasets: [{
+                    label: 'Students',
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.StudentsPerCourseData)),
+                    backgroundColor: '#007bff'
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+
+        // Assignments per Course - Bar chart
+        new Chart(document.getElementById("assignmentsChart").getContext("2d"), {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AssignmentsPerCourseLabels)),
+                datasets: [{
+                    label: 'Assignments',
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AssignmentsPerCourseData)),
+                    backgroundColor: '#28a745'
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+
+        // Submissions per Assignment - Bar chart
+        new Chart(document.getElementById("submissionsChart").getContext("2d"), {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SubmissionsPerAssignmentLabels)),
+                datasets: [{
+                    label: 'Submissions',
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SubmissionsPerAssignmentData)),
+                    backgroundColor: '#ffc107'
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+
+        // Average Score per Assignment - Line chart
+        new Chart(document.getElementById("avgScoreChart").getContext("2d"), {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SubmissionsPerAssignmentLabels)),
+                datasets: [{
+                    label: 'Average Score',
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AverageScorePerAssignmentData)),
+                    borderColor: '#dc3545',
+                    backgroundColor: 'rgba(220, 53, 69, 0.2)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: { responsive: true }
+        });
+
+        // Enrollments Over Time - Line chart
+        new Chart(document.getElementById("enrollmentsOverTimeChart").getContext("2d"), {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.EnrollmentsOverTimeLabels)),
+                datasets: [{
+                    label: 'Enrollments',
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.EnrollmentsOverTimeData)),
+                    borderColor: '#17a2b8',
+                    backgroundColor: 'rgba(23, 162, 184, 0.2)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 3,
+                    pointHoverRadius: 5
+                }]
+            },
+            options: { responsive: true }
+        });
+
+        // Top 5 Courses by Enrollment - Doughnut chart
+        new Chart(document.getElementById("topCoursesChart").getContext("2d"), {
+            type: 'doughnut',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TopCoursesLabels)),
+                datasets: [{
+                    label: 'Enrollments',
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TopCoursesData)),
+                    backgroundColor: [
+                        '#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1'
+                    ]
+                }]
+            },
+            options: { responsive: true }
+        });
+    </script>
+}

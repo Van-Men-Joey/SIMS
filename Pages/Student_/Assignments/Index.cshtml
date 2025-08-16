@@ -1,0 +1,66 @@
+﻿@page
+@model SIMS.Pages.Student_.Assignments.IndexModel
+@{
+    Layout = "_LayoutStudent";
+    ViewData["Title"] = "Danh sách bài tập";
+}
+
+<h2 class="mb-4">Danh sách bài tập của bạn</h2>
+
+@if (Model.Assignments == null || !Model.Assignments.Any())
+{
+    <div class="alert alert-info text-center">
+        <i class="bi bi-inbox"></i> Bạn chưa có bài tập nào được giao.
+    </div>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Tiêu đề</th>
+                <th>Mô tả</th>
+                <th>Khóa học</th>
+                <th>Hạn nộp</th>
+                <th>Trạng thái</th>
+                <th>Tải về</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var assignment in Model.Assignments)
+            {
+                var isOverdue = assignment.DueDate < DateTime.Now;
+                <tr>
+                    <td class="fw-semibold">@assignment.Title</td>
+                    <td style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        @assignment.Description
+                    </td>
+                    <td>@assignment.Course?.Title</td>
+                    <td>@assignment.DueDate.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        @if (isOverdue)
+                        {
+                            <span class="badge bg-danger">Quá hạn</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Còn hạn</span>
+                        }
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(assignment.Description))
+                        {
+                            <a href="~/@assignment.Description" class="btn btn-sm btn-primary" target="_blank" title="Tải file bài tập">
+                                <i class="bi bi-download"></i> Tải
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Không có file</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

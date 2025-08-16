@@ -1,0 +1,89 @@
+﻿@page
+@model SIMS.Pages.Faculty_.DashboardModel
+@{
+    ViewData["Title"] = "Faculty Dashboard";
+    Layout = "_LayoutFaculty";
+}
+
+<div class="container-fluid px-4 mt-4">
+    <!-- Quick Actions -->
+    <div class="mb-4">
+        <h3>Quick Actions</h3>
+        <a asp-page="/Faculty_/Assignments/Create" class="btn btn-success me-2">
+            <i class="fas fa-plus-circle"></i> Create Assignment
+        </a>
+        <a asp-page="/Faculty/Reports/Index" class="btn btn-info me-2">
+            <i class="fas fa-chart-pie"></i> View Reports
+        </a>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Courses</h5>
+                    <h2>@Model.TotalCourses</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Assignments</h5>
+                    <h2>@Model.TotalAssignments</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Submissions</h5>
+                    <h2>@Model.TotalSubmissions</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-danger h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Reports</h5>
+                    <h2>@Model.TotalReports</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-chart-bar me-1"></i> Assignment Submissions Overview
+        </div>
+        <div class="card-body">
+            <canvas id="submissionsChart" width="100%" height="40"></canvas>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById("submissionsChart").getContext("2d");
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartLabels)),
+                datasets: [{
+                    label: 'Submissions',
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartData)),
+                    backgroundColor: '#28a745'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    </script>
+}

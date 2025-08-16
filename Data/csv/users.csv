@@ -1,0 +1,4 @@
+Id,Email,PasswordHash,Role,Name,Description
+ST001,thogian@gmail.com,$2a$11$u0XOuRyBmFXPscOgqtJPsOfRIXEQ6X7r2ZBYDxTxlaRqHGc39WA.i,1,V?n Th?,Ng?u lòi
+FC001,thao@gmail.com,$2a$11$o4OpKzTq7eV0lasUuHEISuokmn/8zOP7xe0Aqz8iTKsga2KAFOTUC,2,Th?o_DB,"Nhi?t huy?t, n?ng ??ng"
+AD001,admin@university.edu,$2a$11$KZz1piNvRMKbe/kh4pyhBOO6hDGjCxXA/OhhCAKUWXDmBCF7yb7he,0,System Admin,First Admin

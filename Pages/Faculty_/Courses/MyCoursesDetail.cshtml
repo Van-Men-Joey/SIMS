@@ -1,0 +1,173 @@
+﻿@page "{id}"
+@model SIMS.Pages.Faculty_.Courses.MyCoursesDetailModel
+@{
+    ViewData["Title"] = "Course Detail";
+    Layout = "_LayoutFaculty";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-3"><i class="fas fa-book-open me-2 text-primary"></i>@Model.Course.Title</h2>
+    <p class="text-muted fs-5">@Model.Course.Description</p>
+
+    <div class="row mb-4 g-3 text-center">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-3">
+                <h5><i class="fas fa-user-graduate text-primary me-2"></i>Sinh viên</h5>
+                <p class="display-5 fw-bold text-primary mb-0">@Model.StudentCount</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-3">
+                <h5><i class="fas fa-file-alt text-success me-2"></i>Bài tập</h5>
+                <p class="display-5 fw-bold text-success mb-0">@Model.AssignmentCount</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-3">
+                <h5><i class="fas fa-upload text-danger me-2"></i>Submissions</h5>
+                <p class="display-5 fw-bold text-danger mb-0">@Model.SubmissionCount</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4><i class="fas fa-users me-2 text-secondary"></i>Danh sách sinh viên đăng ký</h4>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal" title="Thêm sinh viên">
+            <i class="fas fa-user-plus me-1"></i> Thêm sinh viên
+        </button>
+    </div>
+
+    <!-- Thanh tìm kiếm -->
+    <form method="get" class="mb-4">
+        <input type="hidden" name="id" value="@Model.Course.Id" />
+        <div class="input-group">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i>
+            </button>
+            <input type="text" name="SearchTerm" class="form-control" placeholder="Tìm theo mã, tên hoặc email sinh viên..." value="@Model.SearchTerm" />
+        </div>
+    </form>
+
+    @if (Model.Enrollments.Any())
+    {
+        <div class="list-group mb-4 shadow-sm rounded">
+            @foreach (var enrollment in Model.Enrollments)
+            {
+                <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+                    <div>
+                        <i class="fas fa-user-graduate text-primary me-3 fs-4 align-middle"></i>
+                        <span class="fw-semibold fs-5 text-dark">
+                            @(!string.IsNullOrEmpty(enrollment.Student?.Name) ? enrollment.Student.Name : "Unknown Student")
+                        </span>
+                        <br />
+                        <small class="text-muted">Mã SV: <span class="text-secondary fw-medium">@enrollment.Student?.Id</span></small> |
+                        <small class="text-muted">Email: <span class="text-secondary">@enrollment.Student?.Email</span></small>
+                        <br />
+                        @if (enrollment.Status == Models.EnrollmentStatus.Pending)
+                        {
+                            <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                        }
+                        else if (enrollment.Status == Models.EnrollmentStatus.Accepted)
+                        {
+                            <span class="badge bg-success">Đã chấp nhận</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Từ chối</span>
+                        }
+                    </div>
+                    <div class="text-end">
+                        <small class="text-muted d-block mb-2">
+                            <i class="fas fa-calendar-alt me-1"></i>Đăng ký: @enrollment.EnrolledDate.ToLocalTime().ToString("dd MMM yyyy")
+                        </small>
+
+                        @if (enrollment.Status == Models.EnrollmentStatus.Pending)
+                        {
+                            <form method="post" asp-page-handler="ApproveEnrollment" class="m-0 d-inline">
+                                <input type="hidden" name="EnrollmentId" value="@enrollment.Id" />
+                                <button type="submit" class="btn btn-sm btn-success" title="Chấp nhận đăng ký">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </form>
+                        }
+
+                        <form method="post" asp-page-handler="DeleteEnrollment" class="m-0 d-inline">
+                            <input type="hidden" name="EnrollmentId" value="@enrollment.Id" />
+                            <button type="submit" class="btn btn-sm btn-danger"
+                                    onclick="return confirm('Bạn có chắc muốn xóa sinh viên này khỏi khóa học?');"
+                                    title="Xóa sinh viên">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    else
+    {
+        <div class="alert alert-info d-flex align-items-center gap-2">
+            <i class="fas fa-info-circle fs-4"></i>
+            <span>Chưa có sinh viên đăng ký khóa học này.</span>
+        </div>
+    }
+
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-primary" asp-page="/Faculty_/Courses/Enrollment" asp-route-id="@Model.Course.Id">
+            <i class="fas fa-users-cog me-1"></i> Quản lý sinh viên
+        </a>
+        <a class="btn btn-outline-success" asp-page="/Faculty_/Courses/Assignments" asp-route-id="@Model.Course.Id">
+            <i class="fas fa-tasks me-1"></i> Quản lý bài tập
+        </a>
+    </div>
+</div>
+
+<!-- Modal Thêm sinh viên -->
+<div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="post" asp-page-handler="AddEnrollment" class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addStudentModalLabel"><i class="fas fa-user-plus me-2"></i>Thêm sinh viên vào khóa học</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="CourseId" value="@Model.Course.Id" />
+
+                <div class="mb-3">
+                    <label for="studentIdInput" class="form-label fw-semibold">Nhập hoặc chọn sinh viên</label>
+                    <input list="studentsDatalist" class="form-control" id="studentIdInput" name="StudentId" placeholder="Nhập mã sinh viên hoặc tên..." required />
+                    <datalist id="studentsDatalist">
+                        @foreach (var student in Model.AllStudents)
+                        {
+                            <option value="@student.Id">@student.Id.Substring(0, 5) - @student.Name - @student.Email</option>
+                        }
+                    </datalist>
+                </div>
+
+                @if (Model.ErrorMessage != null)
+                {
+                    <div class="alert alert-danger">@Model.ErrorMessage</div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check me-1"></i> Thêm
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Highlight khi hover lên list-group-item */
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+        transition: background-color 0.2s ease;
+    }
+    /* Font weight medium */
+    .fw-medium {
+        font-weight: 500;
+    }
+</style>

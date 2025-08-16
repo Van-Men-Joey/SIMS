@@ -1,0 +1,100 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var role = HttpContextAccessor.HttpContext?.Session.GetString("Role") ?? "";
+}
+
+@if (role == "Student")
+{
+    <div class="sidebar-wrapper p-3 text-white student-sidebar">
+        <div class="fs-4 fw-bold text-center mb-4">
+            🎓 SIMS Student
+        </div>
+        <div class="list-group list-group-flush">
+            <a asp-page="/Student_/Dashboard" class="menu-item">
+                <i class="fas fa-home me-2"></i> Dashboard
+            </a>
+            <a asp-page="/Student_/Courses/MyCoursesStudent" class="menu-item">
+                <i class="fas fa-book me-2"></i> My Courses
+            </a>
+            <a asp-page="/Student_/Enrollments/EnrollmentStudent" class="menu-item">
+                <i class="fas fa-book-open me-2"></i> Enrollment
+            </a>
+           @*  <a asp-page="/Student_/Submissions/Submit" class="menu-item">
+                <i class="fas fa-upload me-2"></i> Submissions
+            </a> *@
+            <a asp-page="/Student_/Reports" class="menu-item">
+                <i class="fas fa-chart-line me-2"></i> Reports
+            </a>
+            <a href="#" onclick="confirmLogout()" class="menu-item logout">
+                <i class="fas fa-sign-out-alt me-2"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <audio id="clickSound" src="~/sounds/click.mp3" preload="auto"></audio>
+
+    <script>
+        function confirmLogout() {
+            if (confirm("Are you sure you want to log out?")) {
+                playClickSound();
+                window.location.href = '@Url.Page("/Auth/Logout")';
+            }
+        }
+
+        function playClickSound() {
+            var sound = document.getElementById("clickSound");
+            sound.currentTime = 0;
+            sound.play();
+        }
+
+        document.querySelectorAll(".menu-item").forEach(item => {
+            item.addEventListener("click", playClickSound);
+        });
+    </script>
+
+    <style>
+        /* Sidebar style */
+        .student-sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            border-radius: 0 10px 10px 0;
+            min-height: 100vh;
+            box-shadow: 2px 0 20px rgba(0,0,0,0.15);
+        }
+
+        /* Menu item style */
+        .menu-item {
+            display: block;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+            .menu-item i {
+                transition: transform 0.3s ease;
+            }
+
+            .menu-item:hover {
+                background: rgba(255, 255, 255, 0.15);
+                transform: translateX(5px);
+            }
+
+                .menu-item:hover i {
+                    transform: rotate(10deg) scale(1.2);
+                }
+
+        /* Logout style */
+        .logout {
+            background: rgba(255, 99, 71, 0.3);
+        }
+
+            .logout:hover {
+                background: rgba(255, 99, 71, 0.5);
+            }
+    </style>
+}

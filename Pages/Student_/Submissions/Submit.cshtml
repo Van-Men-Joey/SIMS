@@ -1,0 +1,135 @@
+﻿@page "{assignmentId}"
+@model SIMS.Pages.Student_.Submissions.SubmitModel
+@{
+    ViewData["Title"] = "Submit Assignment";
+    Layout = "_LayoutStudent";
+}
+
+<div class="container mt-5">
+    <h2 class="text-primary fw-bold mb-3">
+        <i class="fas fa-upload me-2"></i>Submit Assignment
+    </h2>
+    <hr class="mb-4" />
+
+    @if (Model.Assignment != null)
+    {
+        <div class="card shadow-sm p-4 mb-4 rounded-4 border-0" style="background: linear-gradient(135deg, #667eea, #764ba2); color: #fff;">
+            <h4>@Model.Assignment.Title</h4>
+            <p class="mb-1"><strong>Due Date:</strong> @Model.Assignment.DueDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</p>
+        </div>
+
+        @if (Model.ExistingSubmission != null)
+        {
+            <div class="alert alert-info d-flex align-items-center justify-content-between shadow-sm rounded-3" role="alert" style="background: #d0e8ff; color: #0b356a;">
+                <div>
+                    <i class="fas fa-check-circle me-2"></i>
+                    You have already submitted this assignment on
+                    <strong>@Model.ExistingSubmission.SubmittedDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</strong>.
+                    <br />
+                    <a href="~/@Model.ExistingSubmission.FilePath" target="_blank" class="btn btn-sm btn-primary mt-2 shadow-sm">
+                        <i class="fas fa-file"></i> View Submitted File
+                    </a>
+                </div>
+
+                <button class="btn btn-outline-danger btn-sm shadow-sm" data-bs-toggle="modal" data-bs-target="#cancelModal">
+                    <i class="fas fa-times-circle me-1"></i> Cancel Submission
+                </button>
+            </div>
+        }
+
+        @if (DateTime.UtcNow > Model.Assignment.DueDate)
+        {
+            <div class="alert alert-danger shadow-sm rounded-3" role="alert">
+                The submission deadline has passed. You can no longer submit this assignment.
+            </div>
+        }
+        else
+        {
+            <form method="post" enctype="multipart/form-data" class="mt-4 needs-validation" novalidate>
+                <div class="mb-4">
+                    <label for="uploadFile" class="form-label fw-semibold">Choose file to upload:</label>
+                    <input type="file" class="form-control form-control-lg shadow-sm" id="uploadFile" asp-for="UploadFile" required />
+                    <div class="invalid-feedback">
+                        Please select a file to upload.
+                    </div>
+                    <div class="form-text">Allowed file types: pdf, docx, zip, etc.</div>
+                </div>
+                <button type="submit" class="btn btn-gradient btn-lg w-100 shadow-lg text-white fw-bold" style="background: linear-gradient(90deg, #43cea2, #185a9d); transition: all 0.3s ease;">
+                    <i class="fas fa-upload me-2"></i> Upload Submission
+                </button>
+            </form>
+        }
+    }
+    else
+    {
+        <div class="alert alert-danger shadow-sm rounded-3">
+            Assignment not found.
+        </div>
+    }
+
+    @if (!ModelState.IsValid)
+    {
+        <div class="alert alert-danger mt-3 shadow-sm rounded-3">
+            @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <div>@error.ErrorMessage</div>
+            }
+        </div>
+    }
+</div>
+
+<!-- Modal for Cancel Confirmation -->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg">
+            <div class="modal-header bg-danger text-white rounded-top-4">
+                <h5 class="modal-title" id="cancelModalLabel"><i class="fas fa-exclamation-triangle me-2"></i>Confirm Cancel Submission</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body fs-5">
+                Are you sure you want to cancel your submission? You can upload again afterward.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary shadow-sm" data-bs-dismiss="modal">Close</button>
+                <form method="post" asp-page-handler="Cancel" class="d-inline">
+                    <input type="hidden" name="assignmentId" value="@Model.Assignment.Id" />
+                    <button type="submit" class="btn btn-danger shadow-sm">
+                        <i class="fas fa-times-circle me-1"></i> Yes, Cancel Submission
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Bootstrap form validation
+        (() => {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+}
+
+<style>
+    .btn-gradient:hover {
+        background: linear-gradient(90deg, #185a9d, #43cea2) !important;
+        color: #fff !important;
+        transform: scale(1.05);
+    }
+
+    .btn-gradient:focus {
+        box-shadow: 0 0 10px #43cea2;
+        outline: none;
+    }
+</style>

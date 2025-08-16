@@ -1,0 +1,163 @@
+﻿@page
+@using SIMS.Models
+@model SIMS.Pages.Admin.Enrollments.IndexModel
+@{
+    ViewData["Title"] = "Quản lý đăng ký học";
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container-fluid px-4 mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="text-primary fw-bold mb-0">
+            <i class="fas fa-clipboard-list me-2"></i> Enrollment Management
+        </h3>
+        <a asp-page="Create" class="btn btn-success">
+            <i class="fas fa-plus me-1"></i> Thêm đăng ký mới
+        </a>
+    </div>
+
+    <!-- Search + Filter -->
+    <form method="get" class="row g-3 align-items-center mb-3" autocomplete="off">
+        <div class="col-md-4 position-relative">
+            <input type="text" id="searchInput" name="SearchString" value="@Model.SearchString" class="form-control" placeholder="Tìm ID sinh viên, tên sinh viên hoặc tên khóa học..." />
+            <div id="suggestions" class="list-group position-absolute w-100" style="z-index: 1000;"></div>
+        </div>
+        <div class="col-md-3">
+            <input type="month" name="FilterMonth" value="@Model.FilterMonth" class="form-control" />
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search me-1"></i> Tìm kiếm
+            </button>
+            <a asp-page="Index" class="btn btn-secondary ms-1">
+                <i class="fas fa-undo me-1"></i> Xóa lọc
+            </a>
+        </div>
+    </form>
+
+    <!-- Enrollment Table -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover table-striped mb-0 align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>ID Sinh viên</th>
+                        <th>Tên sinh viên</th>
+                        <th>Khóa học</th>
+                        <th>Ngày đăng ký</th>
+                        <th class="text-center">Trạng thái</th>
+                        <th class="text-center">Xóa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Enrollments.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-3">Không có đăng ký nào.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @for (int i = 0; i < Model.Enrollments.Count; i++)
+                        {
+                            var enrollment = Model.Enrollments[i];
+                            Model.StudentsMap.TryGetValue(enrollment.StudentId, out var student);
+                            Model.CoursesMap.TryGetValue(enrollment.CourseId, out var course);
+
+                            <tr>
+                                <td>@((Model.PageNumber - 1) * Model.PageSize + i + 1)</td>
+                                <td>@(student?.Id ?? "-")</td>
+                                <td>@(student?.Name ?? "-")</td>
+                                <td>@(course?.Title ?? "Không xác định")</td>
+                                <td>@enrollment.EnrolledDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="text-center">
+                                    @if (enrollment.Status == EnrollmentStatus.Pending)
+                                    {
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="fas fa-clock me-1"></i> Pending
+                                        </span>
+                                    }
+                                    else if (enrollment.Status == EnrollmentStatus.Accepted)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check-circle me-1"></i> Accepted
+                                        </span>
+                                    }
+                                    else if (enrollment.Status == EnrollmentStatus.Rejected)
+                                    {
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times-circle me-1"></i> Rejected
+                                        </span>
+                                    }
+                                </td>
+
+                                <td class="text-center">
+                                    <form method="post" asp-page-handler="Delete" asp-route-id="@enrollment.Id" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đăng ký này?');">
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    @if (Model.TotalPages > 1)
+    {
+        <nav aria-label="Page navigation" class="mt-3">
+            <ul class="pagination justify-content-center">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a class="page-link"
+                           asp-page="Index"
+                           asp-route-PageNumber="@i"
+                           asp-route-SearchString="@Model.SearchString"
+                           asp-route-SortOrder="@Model.SortOrder"
+                           asp-route-FilterMonth="@Model.FilterMonth">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.status-dropdown').forEach(function (dropdown) {
+                dropdown.addEventListener('change', function () {
+                    const id = this.dataset.id;
+                    const newStatus = this.value;
+
+                    fetch(`?handler=UpdateStatus`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        },
+                        body: JSON.stringify({ id: id, status: newStatus })
+                    }).then(res => {
+                        if (!res.ok) throw new Error("Lỗi cập nhật");
+                        return res.json();
+                    }).then(data => {
+                        if (data.success) {
+                            console.log("Cập nhật thành công");
+                        } else {
+                            alert("Cập nhật thất bại");
+                        }
+                    }).catch(err => {
+                        alert("Có lỗi khi cập nhật trạng thái");
+                        console.error(err);
+                    });
+                });
+            });
+        });
+    </script>
+}

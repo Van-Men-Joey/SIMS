@@ -1,0 +1,28 @@
+﻿@page
+@model SIMS.Pages.Submissions.CreateModel
+@{
+    ViewData["Title"] = "Add Submission";
+}
+
+<h2>➕ Add Submission</h2>
+
+<form method="post">
+    <div class="mb-3">
+        <label class="form-label">Student ID</label>
+        <input asp-for="Submission.StudentId" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Assignment ID</label>
+        <input asp-for="Submission.AssignmentId" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">File Path</label>
+        <input asp-for="Submission.FilePath" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Score</label>
+        <input asp-for="Submission.Score" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+</form>

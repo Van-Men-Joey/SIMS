@@ -1,0 +1,34 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using SIMS.Models;
+using SIMS.Services;
+
+namespace SIMS.Pages.Submissions
+{
+    public class CreateModel : PageModel
+    {
+        private readonly ISubmissionService _submissionService;
+
+        public CreateModel(ISubmissionService submissionService)
+        {
+            _submissionService = submissionService;
+        }
+
+        [BindProperty]
+        public SIMS.Models.Submission Submission { get; set; } = new();
+
+        public void OnGet()
+        {
+        }
+
+        public async Task<IActionResult>
+    OnPostAsync()
+    {
+    if (!ModelState.IsValid)
+    return Page();
+
+    await _submissionService.AddAsync(Submission);
+    return RedirectToPage("Index");
+    }
+    }
+    }

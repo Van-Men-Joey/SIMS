@@ -1,0 +1,119 @@
+﻿@page
+@model SIMS.Pages.Student_.Enrollments.EnrollmentStudentModel
+@{
+    ViewData["Title"] = "My Enrollments";
+    Layout = "_LayoutStudent";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary">
+        <i class="fas fa-list-check me-2"></i> My Enrollments
+    </h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Form Enroll New Course -->
+    <div class="mb-4">
+        <form method="post" class="row g-3 align-items-center">
+            <div class="col-auto">
+                <label for="courseInput" class="col-form-label fw-bold">Enroll New Course:</label>
+            </div>
+            <div class="col-md-6">
+                <!-- Input + datalist -->
+                <input list="courseList" id="courseInput" name="SelectedCourseId" class="form-control"
+                       placeholder="Type course name or ID" required />
+
+                <datalist id="courseList">
+                    @foreach (var course in Model.AvailableCourses)
+                    {
+                        <!-- value là ID để submit, nhưng label hiển thị tên -->
+                        <option value="@course.Id">@course.Title</option>
+                    }
+                </datalist>
+            </div>
+            <div class="col-auto">
+                <button type="submit" asp-page-handler="Enroll" class="btn btn-primary">
+                    <i class="fas fa-plus-circle me-1"></i> Enroll
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- My Enrollments -->
+    @if (Model.Enrollments.Any())
+    {
+        <div class="row">
+            @foreach (var enrollment in Model.Enrollments)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm border-0 h-100 enrollment-card">
+                        <div class="card-body d-flex flex-column">
+                            <div class="mb-3 text-center">
+                                <i class="fas fa-book fa-3x text-success"></i>
+                            </div>
+                            <h5 class="card-title fw-bold text-center">@enrollment.Course?.Title</h5>
+                            <p class="card-text text-muted flex-grow-1">@enrollment.Course?.Description</p>
+                            <p class="text-end text-secondary fst-italic mb-2">
+                                Enrolled on: @enrollment.EnrolledDate.ToLocalTime().ToString("dd MMM yyyy")
+                            </p>
+                            <p class="fw-bold text-center">
+                                Status:
+                                @if (enrollment.Status == Models.EnrollmentStatus.Pending)
+                                {
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                }
+                                else if (enrollment.Status == Models.EnrollmentStatus.Accepted)
+                                {
+                                    <span class="badge bg-success">Accepted</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Rejected</span>
+                                }
+                            </p>
+                            @if (enrollment.Status != Models.EnrollmentStatus.Accepted)
+                            {
+                                <form method="post" asp-page-handler="Unenroll" asp-route-id="@enrollment.Id"
+                                      onsubmit="return confirm('Are you sure you want to unenroll?');">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                                        <i class="fas fa-times-circle me-1"></i> Unenroll
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">
+            <i class="fas fa-info-circle me-2"></i> You have no enrollments.
+        </div>
+    }
+</div>
+
+<style>
+    .enrollment-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .enrollment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+</style>

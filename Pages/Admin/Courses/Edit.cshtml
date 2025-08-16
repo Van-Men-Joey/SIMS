@@ -1,0 +1,43 @@
+﻿@page
+@model SIMS.Pages.Admin.Courses.EditModel
+@{
+    ViewData["Title"] = "Edit Course";
+}
+
+<h2>Edit Course</h2>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Course.Id" class="control-label"></label>
+        <input asp-for="Course.Id" class="form-control" readonly />
+        <span asp-validation-for="Course.Id" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Course.Title" class="control-label"></label>
+        <input asp-for="Course.Title" class="form-control" />
+        <span asp-validation-for="Course.Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Course.Description" class="control-label"></label>
+        <textarea asp-for="Course.Description" class="form-control"></textarea>
+        <span asp-validation-for="Course.Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Course.FacultyId" class="control-label">Assigned Faculty</label>
+        <select asp-for="Course.FacultyId" class="form-control"
+                asp-items="@(new SelectList(Model.FacultyList, "Id", "Name"))">
+            <option value="">-- Select Faculty --</option>
+        </select>
+        <span asp-validation-for="Course.FacultyId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

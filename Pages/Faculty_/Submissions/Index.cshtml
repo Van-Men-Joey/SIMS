@@ -1,0 +1,71 @@
+﻿@page
+@model SIMS.Pages.Faculty_.Submissions.IndexModel
+@{
+    ViewData["Title"] = "Quản lý bài nộp";
+    Layout = "_LayoutFaculty";
+}
+
+<h2 class="mb-4 text-primary fw-bold"><i class="fas fa-file-upload me-2"></i>Quản lý bài nộp</h2>
+
+<form method="get" class="mb-4 w-50">
+    <label for="courseSelect" class="form-label fw-semibold">Chọn khóa học:</label>
+    <select id="courseSelect" class="form-select" asp-for="SelectedCourseId" asp-items="@(new SelectList(Model.Courses, "Id", "Title"))" onchange="this.form.submit()">
+        <option value="">-- Chọn khóa học --</option>
+    </select>
+</form>
+
+@if (string.IsNullOrEmpty(Model.SelectedCourseId))
+{
+    <div class="alert alert-info"><i class="fas fa-info-circle me-2"></i>Vui lòng chọn khóa học để xem bài nộp.</div>
+}
+else if (!Model.Submissions.Any())
+{
+    <div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>Chưa có bài nộp nào cho khóa học này.</div>
+}
+else
+{
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-striped table-hover align-middle text-nowrap">
+            <thead class="table-dark">
+                <tr>
+                    <th><i class="fas fa-user-graduate me-1"></i>Sinh viên</th>
+                    <th><i class="fas fa-book me-1"></i>Bài tập</th>
+                    <th><i class="fas fa-file-pdf me-1"></i>File nộp</th>
+                    <th><i class="fas fa-calendar-alt me-1"></i>Ngày nộp</th>
+                    <th><i class="fas fa-star me-1"></i>Điểm</th>
+                    <th><i class="fas fa-comment-alt me-1"></i>Feedback</th>
+                    <th><i class="fas fa-cogs me-1"></i>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var submission in Model.Submissions)
+                {
+                    <tr>
+                        <td class="fw-semibold">@((submission.Student?.Name) ?? "Unknown")</td>
+                        <td>@(submission.Assignment?.Title ?? "Unknown")</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(submission.FilePath))
+                            {
+                                <a href="@Url.Content($"~/{submission.FilePath}")" target="_blank" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-file-download me-1"></i>Xem file
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </td>
+                        <td>@submission.SubmittedDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@(submission.Score?.ToString() ?? "-")</td>
+                        <td>@(string.IsNullOrEmpty(submission.Feedback) ? "-" : submission.Feedback)</td>
+                        <td>
+                            <a asp-page="Grade" asp-route-id="@submission.Id" class="btn btn-sm btn-success" title="Chấm điểm">
+                                <i class="fas fa-pen-nib"></i> Chấm điểm
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

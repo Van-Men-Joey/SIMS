@@ -1,0 +1,105 @@
+﻿@page
+@model SIMS.Pages.Admin.Courses.IndexModel
+@{
+    ViewData["Title"] = "Courses";
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container-fluid px-4 mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="text-primary fw-bold mb-0">
+            <i class="fas fa-book me-2"></i>Courses Management
+        </h3>
+        <a asp-page="Create" class="btn btn-success">
+            <i class="fas fa-plus-circle me-1"></i> Add Course
+        </a>
+    </div>
+
+    <!-- Search + Sort -->
+    <form method="get" class="row g-3 align-items-center mb-3">
+        <div class="col-md-4">
+            <input type="text" name="SearchString" value="@Model.SearchString" class="form-control" placeholder="Search courses..." />
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search me-1"></i> Search
+            </button>
+            <a asp-page="Index" class="btn btn-secondary">
+                <i class="fas fa-undo me-1"></i> Clear
+            </a>
+        </div>
+        <div class="col-md-4 text-end">
+            <div class="btn-group" role="group" aria-label="Sort options">
+                <a asp-page="Index" asp-route-SortOrder="title_asc" asp-route-SearchString="@Model.SearchString" class="btn btn-outline-secondary btn-sm">Title ↑</a>
+                <a asp-page="Index" asp-route-SortOrder="title_desc" asp-route-SearchString="@Model.SearchString" class="btn btn-outline-secondary btn-sm">Title ↓</a>
+                <a asp-page="Index" asp-route-SortOrder="faculty_asc" asp-route-SearchString="@Model.SearchString" class="btn btn-outline-secondary btn-sm">Faculty ↑</a>
+                <a asp-page="Index" asp-route-SortOrder="faculty_desc" asp-route-SearchString="@Model.SearchString" class="btn btn-outline-secondary btn-sm">Faculty ↓</a>
+            </div>
+        </div>
+    </form>
+
+    <!-- Courses Table -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover table-striped mb-0 align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Faculty</th>
+                        <th class="text-center" style="width: 180px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Courses.Any())
+                    {
+                        foreach (var course in Model.Courses)
+                        {
+                            <tr>
+                                <td>@course.Title</td>
+                                <td>@course.Description</td>
+                                <td>@course.Faculty?.Name</td>
+                                <td class="text-center">
+                                    <a asp-page="Detail" asp-route-id="@course.Id" class="btn btn-info btn-sm text-white me-1">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-page="Edit" asp-route-id="@course.Id" class="btn btn-warning btn-sm me-1">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-page="Delete" asp-route-id="@course.Id" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-3">No courses found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    @if (Model.TotalPages > 1)
+    {
+        <nav aria-label="Page navigation" class="mt-3">
+            <ul class="pagination justify-content-center">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a class="page-link"
+                           asp-page="Index"
+                           asp-route-PageNumber="@i"
+                           asp-route-SearchString="@Model.SearchString"
+                           asp-route-SortOrder="@Model.SortOrder">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>

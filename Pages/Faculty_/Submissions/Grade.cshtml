@@ -1,0 +1,47 @@
+﻿@page "{id}"
+@model SIMS.Pages.Faculty_.Submissions.GradeModel
+@{
+    ViewData["Title"] = "Chấm điểm bài nộp";
+    Layout = "_LayoutFaculty";
+}
+
+<h2 class="mb-4 text-success fw-bold"><i class="fas fa-pen-nib me-2"></i>Chấm điểm bài nộp</h2>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="post" novalidate>
+            <input type="hidden" asp-for="Submission.Id" />
+
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Sinh viên:</label>
+                <p class="fs-5">@(Model.Submission.Student?.Name ?? "Unknown")</p>
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Bài tập:</label>
+                <p class="fs-5">@(Model.Submission.Assignment?.Title ?? "Unknown")</p>
+            </div>
+            <div class="mb-4">
+                <label asp-for="Submission.Score" class="form-label fw-semibold">Điểm</label>
+                <input type="number" asp-for="Submission.Score" min="0" max="10" step="0.1" class="form-control form-control-lg" />
+                <span asp-validation-for="Submission.Score" class="text-danger fw-semibold"></span>
+            </div>
+            <div class="mb-4">
+                <label asp-for="Submission.Feedback" class="form-label fw-semibold">Phản hồi</label>
+                <textarea asp-for="Submission.Feedback" class="form-control" rows="4" placeholder="Viết phản hồi cho sinh viên..."></textarea>
+                <span asp-validation-for="Submission.Feedback" class="text-danger fw-semibold"></span>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="fas fa-save me-1"></i> Lưu
+                </button>
+                <a asp-page="Index" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-times me-1"></i> Hủy
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

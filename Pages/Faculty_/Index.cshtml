@@ -1,0 +1,50 @@
+﻿@page
+@model SIMS.Pages.Faculty_.IndexModel
+@{
+    ViewData["Title"] = "Welcome";
+    Layout = "_LayoutFaculty";
+}
+
+<div class="container-fluid px-4 mt-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <h2 class="mb-3 text-primary">
+                <i class="fas fa-chalkboard-teacher me-2"></i> Welcome to the Faculty Portal
+            </h2>
+            <p class="fs-5">
+                Hello <strong>@(HttpContext.Session.GetString("UserName") ?? "Faculty")</strong>,
+                welcome to the SIMS Faculty Management System.
+            </p>
+            <hr />
+            <p>
+                This system allows you to manage your courses, create and review assignments, track submissions,
+                and access student performance reports.
+            </p>
+
+            <ul class="list-group list-group-flush mt-4">
+                <li class="list-group-item">
+                    <i class="fas fa-book-open me-2 text-primary"></i>
+                    <strong>Courses:</strong> Manage and update your assigned courses.
+                </li>
+                <li class="list-group-item">
+                    <i class="fas fa-tasks me-2 text-success"></i>
+                    <strong>Assignments:</strong> Create, edit and view assignments for each course.
+                </li>
+                <li class="list-group-item">
+                    <i class="fas fa-file-upload me-2 text-warning"></i>
+                    <strong>Submissions:</strong> Review student submissions and feedback.
+                </li>
+                <li class="list-group-item">
+                    <i class="fas fa-chart-line me-2 text-danger"></i>
+                    <strong>Reports:</strong> Generate and analyze student performance reports.
+                </li>
+            </ul>
+
+            <div class="mt-4">
+                <a asp-page="/Faculty_/Dashboard" class="btn btn-primary btn-lg">
+                    <i class="fas fa-tachometer-alt me-2"></i> Go to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

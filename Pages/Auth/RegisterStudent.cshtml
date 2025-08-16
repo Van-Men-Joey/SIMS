@@ -1,0 +1,51 @@
+﻿@page
+@model SIMS.Pages.Auth.RegisterStudentModel
+@{
+    ViewData["Title"] = "Student Registration";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-info text-white text-center rounded-top-4">
+                    <h3>🎓 Student Registration</h3>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger">@Model.ErrorMessage</div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+                    {
+                        <div class="alert alert-success">@Model.SuccessMessage</div>
+                    }
+
+                    <form method="post">
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">Full Name</label>
+                            <input asp-for="Name" class="form-control" placeholder="Enter full name" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email</label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="Enter email" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label">Password</label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" required />
+                        </div>
+
+                        <button type="submit" class="btn btn-info w-100 rounded-pill text-white">Register</button>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <small>Already have an account?</small>
+                        <a asp-page="/Auth/Login" class="btn btn-outline-primary btn-sm rounded-pill ms-2">Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

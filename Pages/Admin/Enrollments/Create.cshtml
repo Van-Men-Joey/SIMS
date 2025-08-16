@@ -1,0 +1,41 @@
+﻿@page
+@model SIMS.Pages.Admin.Enrollments.CreateModel
+@{
+    ViewData["Title"] = "Thêm đăng ký học mới";
+    Layout = "_LayoutAdmin";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form method="post" class="mb-3">
+    <div class="mb-3">
+        <label for="studentSelect" class="form-label">Chọn sinh viên</label>
+        <select asp-for="SelectedStudentId" class="form-select" id="studentSelect" required>
+            <option value="">-- Chọn sinh viên --</option>
+            @foreach (var student in Model.Students)
+            {
+                <option value="@student.Id">@student.Name (@student.Email)</option>
+            }
+        </select>
+        <span asp-validation-for="SelectedStudentId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="courseSelect" class="form-label">Chọn khóa học</label>
+        <select asp-for="SelectedCourseId" class="form-select" id="courseSelect" required>
+            <option value="">-- Chọn khóa học --</option>
+            @foreach (var course in Model.Courses)
+            {
+                <option value="@course.Id">@course.Title</option>
+            }
+        </select>
+        <span asp-validation-for="SelectedCourseId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Thêm đăng ký</button>
+    <a asp-page="Index" class="btn btn-secondary ms-2">Hủy</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

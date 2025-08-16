@@ -1,0 +1,59 @@
+﻿@page "{id}"
+@model SIMS.Pages.Faculty_.Assignments.EditModel
+@{
+    ViewData["Title"] = "Chỉnh sửa bài tập";
+    Layout = "_LayoutFaculty";
+}
+
+<h2>Chỉnh sửa bài tập</h2>
+
+<form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+    <input type="hidden" asp-for="Assignment.Id" />
+
+    <div class="mb-3">
+        <label asp-for="Assignment.Title" class="form-label"></label>
+        <input asp-for="Assignment.Title" class="form-control" />
+        <span asp-validation-for="Assignment.Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label>File bài tập hiện tại</label>
+        @if (!string.IsNullOrEmpty(Model.CurrentFileName))
+        {
+            <div>
+                <a href="@Url.Content($"~/uploads/assignments/{Model.CurrentFileName}")" target="_blank">@Model.CurrentFileName</a>
+            </div>
+        }
+        else
+        {
+            <div><em>Chưa có file nào được tải lên.</em></div>
+        }
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Assignment.UploadedFile" class="form-label">Tải lên file mới (ppt, docx, pdf...)</label>
+        <input asp-for="Assignment.UploadedFile" type="file" class="form-control" accept=".ppt,.pptx,.doc,.docx,.pdf" />
+        <span asp-validation-for="Assignment.UploadedFile" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Assignment.CourseId" class="form-label">Khóa học</label>
+        <select asp-for="Assignment.CourseId" class="form-select">
+            <option value="">-- Chọn khóa học --</option>
+            @foreach (var course in Model.Courses)
+            {
+                <option value="@course.Id" selected="@(course.Id == Model.Assignment.CourseId)">
+                    @course.Title
+                </option>
+            }
+        </select>
+        <span asp-validation-for="Assignment.CourseId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+    <a asp-page="Index" class="btn btn-secondary ms-2">Hủy</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

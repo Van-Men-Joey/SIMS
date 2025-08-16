@@ -1,0 +1,69 @@
+﻿@page
+@model SIMS.Pages.Faculty_.Assignments.CreateModel
+@{
+    ViewData["Title"] = "Tạo bài tập mới";
+    Layout = "_LayoutFaculty";
+}
+
+<h2 class="mb-4">Tạo bài tập mới</h2>
+
+<form method="post" enctype="multipart/form-data" class="needs-validation" novalidate id="createAssignmentForm">
+    <div class="form-floating mb-3">
+        <input asp-for="Assignment.Title" class="form-control" id="titleInput" placeholder="Tiêu đề bài tập" />
+        <label for="titleInput" class="fw-semibold">Tiêu đề bài tập</label>
+        <span asp-validation-for="Assignment.Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Assignment.DescriptionFile" class="form-label fw-semibold">Upload file bài tập (ppt, doc, pdf,...)</label>
+        <input asp-for="Assignment.DescriptionFile" type="file" class="form-control" accept=".ppt,.pptx,.doc,.docx,.pdf" />
+        <span asp-validation-for="Assignment.DescriptionFile" class="text-danger"></span>
+    </div>
+
+    <div class="form-floating mb-3">
+        <select asp-for="Assignment.CourseId" class="form-select" id="courseSelect" aria-label="Chọn khóa học">
+            <option value="">-- Chọn khóa học --</option>
+            @foreach (var course in Model.Courses)
+            {
+                <option value="@course.Id">@course.Title</option>
+            }
+        </select>
+        <label for="courseSelect" class="fw-semibold">Khóa học</label>
+        <span asp-validation-for="Assignment.CourseId" class="text-danger"></span>
+    </div>
+
+    <div class="form-floating mb-1">
+        <input asp-for="Assignment.DueDate" type="datetime-local" class="form-control" id="dueDateInput" />
+        <label for="dueDateInput" class="fw-semibold">Hạn nộp bài</label>
+        <span asp-validation-for="Assignment.DueDate" class="text-danger"></span>
+    </div>
+    <div class="form-text mb-3">
+        <i class="bi bi-info-circle"></i> Deadline là thời điểm cuối cùng sinh viên có thể nộp bài
+    </div>
+
+    <div class="d-flex gap-2 mt-4">
+        <button id="submitBtn" type="submit" class="btn btn-success px-4 d-flex align-items-center">
+            <span id="btnText">Tạo bài tập</span>
+            <div id="btnSpinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></div>
+        </button>
+        <a asp-page="Index" class="btn btn-outline-secondary px-4">Hủy</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            const form = document.getElementById('createAssignmentForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const btnSpinner = document.getElementById('btnSpinner');
+
+            form.addEventListener('submit', function () {
+                submitBtn.disabled = true;
+                btnText.textContent = 'Đang tạo...';
+                btnSpinner.classList.remove('d-none');
+            });
+        })();
+    </script>
+}

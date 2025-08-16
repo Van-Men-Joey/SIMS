@@ -1,0 +1,5 @@
+﻿Id,StudentId,AssignmentId,FilePath,Score,Feedback,SubmittedDate
+e43d6aeb-d79a-427a-89ff-69900fca7a96,ST001,dbce184c-db64-4ea8-a8e3-b998e10a68c9,/submissions/assignment1.docx,90,,2025-08-10T13:47:23.3408169+07:00
+b835677b-7bdc-4472-81ce-d7a339e7e950,ST001,e0565de0-fa6c-45ea-94ef-1660dfbbaa67,uploads/submissions/5a1d8ad5-a4ac-4a39-b8b0-feedfe845120_Lecture 5.pdf,,,2025-08-10T23:01:18.4462362+07:00
+f88e22ac-11c7-4587-a953-446719d01d43,ST002,31705f0a-6435-4ee2-bae4-6e351a50a3a7,uploads/submissions/fc5c782c-5427-4e6e-8a7e-123d29814a77_Usecase Thầy Quang.drawio,,,2025-08-11T14:12:40.5142672+07:00
+4aa84d0a-3b04-417d-b621-aaddc1e9e594,ST004,e0565de0-fa6c-45ea-94ef-1660dfbbaa67,uploads/submissions/8c6b5fea-baca-44a7-97e4-88766dadd540_Assignment 1.docx,,,2025-08-13T06:15:54.0774437Z

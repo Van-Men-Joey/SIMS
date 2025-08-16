@@ -1,0 +1,12 @@
+﻿@page
+@model AccessDeniedModel
+@{
+    ViewData["Title"] = "Access Denied";
+}
+<div class="container mt-5 text-center">
+    <div class="alert alert-danger shadow-lg rounded-4 p-4">
+        <h1 class="mb-3">🚫 Access Denied</h1>
+        <p class="lead">You do not have permission to access this page.</p>
+        <a asp-page="/Index" class="btn btn-primary rounded-pill mt-3">Go Home</a>
+    </div>
+</div>

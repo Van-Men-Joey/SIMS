@@ -1,0 +1,13 @@
+﻿@model SIMS.Models.Faculty
+<h2>Create Faculty</h2>
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label>Name</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Description</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+</form>

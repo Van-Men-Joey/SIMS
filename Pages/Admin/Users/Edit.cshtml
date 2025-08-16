@@ -1,0 +1,75 @@
+﻿@page
+@model SIMS.Pages.Admin.Users.EditModel
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<h2>Edit User</h2>
+
+<form method="post" class="needs-validation" novalidate>
+    <input type="hidden" asp-for="Input.Id" />
+
+    <div class="mb-3">
+        <label asp-for="Input.Name" class="form-label"></label>
+        <input asp-for="Input.Name" class="form-control" />
+        <span asp-validation-for="Input.Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Input.Email" class="form-label"></label>
+        <input asp-for="Input.Email" class="form-control" />
+        <span asp-validation-for="Input.Email" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Input.Role" class="form-label"></label>
+        <select asp-for="Input.Role" class="form-select" asp-items="Html.GetEnumSelectList<Models.UserRole>()"></select>
+        <span asp-validation-for="Input.Role" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Input.Description" class="form-label"></label>
+        <textarea asp-for="Input.Description" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Input.Description" class="text-danger"></span>
+    </div>
+
+    <hr />
+
+    <h5>Đổi mật khẩu (nếu cần)</h5>
+    <div class="alert alert-warning">
+        Nếu bạn nhập mật khẩu mới, hệ thống sẽ cập nhật mật khẩu. Nếu để trống, mật khẩu sẽ được giữ nguyên.
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Input.Password" class="form-label"></label>
+        <input asp-for="Input.Password" class="form-control" id="passwordInput" />
+        <span asp-validation-for="Input.Password" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Input.ConfirmPassword" class="form-label"></label>
+        <input asp-for="Input.ConfirmPassword" class="form-control" />
+        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+    </div>
+
+    <div id="confirmChangePassword" class="alert alert-danger d-none">
+        Bạn có chắc muốn thay đổi mật khẩu không?
+    </div>
+
+    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+    <a asp-page="Index" class="btn btn-secondary">Hủy</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('passwordInput').addEventListener('input', function () {
+            var confirmBox = document.getElementById('confirmChangePassword');
+            if (this.value.trim().length > 0) {
+                confirmBox.classList.remove('d-none');
+            } else {
+                confirmBox.classList.add('d-none');
+            }
+        });
+    </script>
+}

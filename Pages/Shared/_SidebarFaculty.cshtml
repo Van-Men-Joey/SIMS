@@ -1,0 +1,41 @@
+﻿@* Pages/Shared/_SidebarFaculty.cshtml *@
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var role = HttpContextAccessor.HttpContext?.Session.GetString("Role") ?? "";
+}
+
+@if (role == "Faculty")
+{
+    <div class="bg-primary border-end text-white" id="sidebar-wrapper" style="min-height: 100vh; width: 250px;">
+        <div class="sidebar-heading text-center py-4 fs-4 fw-bold border-bottom">SIMS Faculty</div>
+        <div class="list-group list-group-flush">
+            <a asp-page="/Faculty_/Dashboard" class="list-group-item list-group-item-action bg-primary text-white">
+                <i class="fas fa-chalkboard-teacher me-2"></i> Dashboard
+            </a>
+            <a asp-page="/Faculty_/Courses/MyCoursesFaculty" class="list-group-item list-group-item-action bg-primary text-white">
+                <i class="fas fa-book-open me-2"></i> My Courses
+            </a>
+            <a asp-page="/Faculty_/Assignments/Index" class="list-group-item list-group-item-action bg-primary text-white">
+                <i class="fas fa-tasks me-2"></i> Assignments
+            </a>
+            <a asp-page="/Faculty_/Submissions/Index" class="list-group-item list-group-item-action bg-primary text-white">
+                <i class="fas fa-file-upload me-2"></i> Submissions
+            </a>
+            <a asp-page="/Faculty_/Reports/Index" class="list-group-item list-group-item-action bg-primary text-white">
+                <i class="fas fa-chart-line me-2"></i> Reports
+            </a>
+            <a href="#" onclick="confirmLogout()" class="list-group-item list-group-item-action bg-primary text-white">
+                <i class="fas fa-sign-out-alt me-2"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function confirmLogout() {
+            if (confirm("Are you sure you want to log out?")) {
+                window.location.href = '@Url.Page("/Auth/Logout")';
+            }
+        }
+    </script>
+
+}

@@ -1,0 +1,86 @@
+﻿@* Pages/Student/Dashboard.cshtml *@
+@page
+@model SIMS.Pages.Student_.DashboardModel
+@{
+    ViewData["Title"] = "Student Dashboard";
+    Layout = "_LayoutStudent";
+}
+
+<div class="container-fluid px-4 mt-4">
+    <!-- Welcome -->
+    <div class="mb-4">
+        <h2 class="text-primary">Welcome, @(HttpContext.Session.GetString("UserName") ?? "Student") 👋</h2>
+        <p class="lead">Here's a quick overview of your academic journey.</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Courses</h5>
+                    <h2>@Model.TotalCourses</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Assignments</h5>
+                    <h2>@Model.TotalAssignments</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Submissions</h5>
+                    <h2>@Model.TotalSubmissions</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Reports</h5>
+                    <h2>@Model.TotalReports</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-chart-area me-1"></i> Your Progress Overview
+        </div>
+        <div class="card-body">
+            <canvas id="progressChart" width="100%" height="40"></canvas>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var ctx = document.getElementById("progressChart").getContext("2d");
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartLabels)),
+                datasets: [{
+                    label: 'Progress',
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartData)),
+                    fill: true,
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: true } }
+            }
+        });
+    </script>
+}

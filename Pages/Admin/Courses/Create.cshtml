@@ -1,0 +1,58 @@
+﻿@page
+@model SIMS.Pages.Admin.Courses.CreateModel
+@{
+    ViewData["Title"] = "Create Course";
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container-fluid px-4 mt-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i> Create New Course</h5>
+            <a asp-page="Index" class="btn btn-light btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
+
+        <div class="card-body">
+            <form method="post" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label asp-for="Course.Title" class="form-label">Course Title</label>
+                    <input asp-for="Course.Title" class="form-control" placeholder="Enter course title" />
+                    <span asp-validation-for="Course.Title" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Course.Description" class="form-label">Course Description</label>
+                    <textarea asp-for="Course.Description" class="form-control" rows="3" placeholder="Enter course description"></textarea>
+                    <span asp-validation-for="Course.Description" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Course.FacultyId" class="form-label">Faculty</label>
+                    <select asp-for="Course.FacultyId" class="form-select">
+                        <option value="">-- Select Faculty --</option>
+                        @foreach (var faculty in Model.FacultyList)
+                        {
+                            <option value="@faculty.Id">@faculty.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Course.FacultyId" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check-circle me-1"></i> Create
+                    </button>
+                    <a asp-page="Index" class="btn btn-secondary ms-2">
+                        <i class="fas fa-times-circle me-1"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

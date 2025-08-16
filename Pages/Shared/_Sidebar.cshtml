@@ -1,0 +1,44 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var role = HttpContextAccessor.HttpContext?.Session.GetString("Role") ?? "";
+}
+
+@if (role == "Admin")
+{
+    <div class="bg-dark border-end text-white" id="sidebar-wrapper" style="min-height: 100vh; width: 250px;">
+        <div class="sidebar-heading text-center py-4 fs-4 fw-bold border-bottom">SIMS Admin</div>
+        <div class="list-group list-group-flush">
+            <a asp-page="/Admin/Dashboard" class="list-group-item list-group-item-action bg-dark text-white">
+                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+            </a>
+            <a asp-page="/Admin/Users/Index" class="list-group-item list-group-item-action bg-dark text-white">
+                <i class="fas fa-users me-2"></i> Users
+            </a>
+            <a asp-page="/Admin/Courses/Index" class="list-group-item list-group-item-action bg-dark text-white">
+                <i class="fas fa-book me-2"></i> Courses
+            </a>
+            <a asp-page="/Admin/Enrollments/Index" class="list-group-item list-group-item-action bg-dark text-white">
+                <i class="fas fa-user-plus me-2"></i> Enrollments
+            </a>
+            <a asp-page="/Admin/Assignments/Index" class="list-group-item list-group-item-action bg-dark text-white">
+                <i class="fas fa-tasks me-2"></i> Assignments
+            </a>
+    @*         <a asp-page="/Admin/Reports/Index" class="list-group-item list-group-item-action bg-dark text-white">
+                <i class="fas fa-chart-bar me-2"></i> Reports 
+            </a>*@
+            <a href="#" onclick="confirmLogout()" class="list-group-item list-group-item-action bg-dark text-white">
+                <i class="fas fa-sign-out-alt me-2"></i> Logout
+            </a>
+
+        </div>
+    </div>
+
+    <script>
+        function confirmLogout() {
+            if (confirm("Are you sure you want to log out?")) {
+                window.location.href = '@Url.Page("/Auth/Logout")';
+            }
+        }
+    </script>
+
+}

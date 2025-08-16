@@ -1,0 +1,21 @@
+﻿Id,Email,PasswordHash,Role,Name,Description
+43de842a-c8b3-43c6-9f62-f3d6b4de9394,admin@university.edu,$2a$11$83XdcRwWQduQ9s2QCYbrKuwuWIydAcpLIdy86USmmbUB39LqgwWJ2,Admin,System Admin,
+AD001,thao@gmail.com,$2a$11$YrhVVtg6F0DbMRUso06eveN2TUkqZbkx3qVMvarRvBFvsYpqcseEq,Admin,Thảo_DB,
+ST001,nhi@gmail.com,$2a$11$G5yrOJ0tcV4GqSWj8inBRugZLdKZ8SXAU9XDYNVbiomU.h1DUPvbi,Student,Nhidep,
+FC001,onnhatminh@gmail.com,$2a$11$1KbwbFp5yGjt3eW5wKuqIuGyU5AzoGgf/7aOIrY4q05izOa6C1Xo6,Faculty,MinhOn,
+FC002,joey@gmail.com,$2a$11$7nCkUSgBqUyU6hpaEIn0j.eTKLf//WFanNR9kuWE7zBc3MmCcTSFK,Faculty,Joey,Handsome
+Fake11,fake@gmail.com,$2a$11$7nCkUSgBqUyU6hpaEIn0j.eTKLf//WFanNR9kuWE7zBc3MmCcTSFK,Admin,Fake,
+Fake12,user1@example.com,e3afed0047b08059d0fada10f400c1e5,Admin,Nguyễn Văn A,Quản trị hệ thống
+Fake13,user2@example.com,5f4dcc3b5aa765d61d8327deb882cf99,Faculty,Trần Thị B,Giáo viên bộ môn Toán
+Fake14,user3@example.com,098f6bcd4621d373cade4e832627b4f6,Student,Lê Văn C,Sinh viên năm 2
+Fake15,user4@example.com,202cb962ac59075b964b07152d234b70,Student,Phạm Thị D,Sinh viên năm 3
+Fake16,user5@example.com,81dc9bdb52d04dc20036dbd8313ed055,Faculty,Hoàng Văn E,Giáo viên bộ môn Lý
+Fake17,user6@example.com,5ebe2294ecd0e0f08eab7690d2a6ee69,Admin,Đặng Thị F,Quản trị dữ liệu
+Fake18,user7@example.com,6cb75f652a9b52798eb6cf2201057c73,Student,Nguyễn Thị G,Sinh viên năm cuối
+Fake19,user8@example.com,098f6bcd4621d373cade4e832627b4f6,Faculty,Trần Văn H,Giáo viên bộ môn Hóa
+Fake20,user9@example.com,25d55ad283aa400af464c76d713c07ad,Student,Lê Thị I,Sinh viên năm 1
+Fake21,user10@example.com,5f4dcc3b5aa765d61d8327deb882cf99,Admin,Phạm Văn K,Quản trị mạng
+ST002,hihi@gmail.com,$2a$11$eiuxdd1CKbG8KK.muKfHMO8cn0eFGB/VGEIIGiCh3DT68yN0jfJ0a,Student,hihi,Bình thường
+ST003,menmenmen@gmail.com,$2a$11$moGe2n9yOSOErCTCVv6wb.J2Rn7G8o0s30xHLuH5KxLNMMpugXfKe,Student,Men,
+aadd1a04-d04d-4135-a98b-f7830e7fc104,neko@gmail.com,$2a$11$pB.RygyDyg3AqKOCXMH9muhBy5z2UTfTncOG1172zGXtHQbN9pBoC,Student,Duong,
+ST004,qduong@gmail.com,$2a$11$WcuEyYzeyahB8Unis.Nsl.AiKtf5UNBKkq3kC99qS.FFvGjlocy1.,Student,Duong,Học Giỏi

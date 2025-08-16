@@ -1,0 +1,41 @@
+﻿@page
+@model SIMS.Pages.Student_.IndexModel
+@{
+    ViewData["Title"] = "Student Home";
+    Layout = "_LayoutStudent";
+}
+
+<div class="container mt-4">
+    <h2 class="text-primary">Welcome, @(HttpContext.Session.GetString("UserName") ?? "Student") 🎓</h2>
+    <p class="lead">This is your student homepage. Use the navigation below to access features of the system.</p>
+
+    <div class="row mt-4 g-4">
+        <div class="col-md-4">
+            <div class="card border-primary h-100">
+                <div class="card-body">
+                    <h5 class="card-title">My Courses</h5>
+                    <p class="card-text">View and manage your enrolled courses.</p>
+                    <a href="/Student_/Courses" class="btn btn-primary">Go to Courses</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-success h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Assignments</h5>
+                    <p class="card-text">Check your current assignments and due dates.</p>
+                    <a href="/Student_/Assignments" class="btn btn-success">View Assignments</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-warning h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Submission History</h5>
+                    <p class="card-text">Track your submitted assignments.</p>
+                    <a href="/Student_/Submissions" class="btn btn-warning">View Submissions</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

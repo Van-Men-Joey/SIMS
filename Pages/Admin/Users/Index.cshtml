@@ -1,0 +1,155 @@
+﻿@page
+@model SIMS.Pages.Admin.Users.IndexModel
+@{
+    ViewData["Title"] = "Manage Users";
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container-fluid px-4 mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="text-primary fw-bold mb-0">
+            <i class="fas fa-users me-2"></i> User Management
+        </h3>
+        <a asp-page="Create" class="btn btn-success">
+            <i class="fas fa-user-plus me-1"></i> Add New User
+        </a>
+    </div>
+
+    <!-- Search + Role filter -->
+    <form method="get" class="mb-3 position-relative" autocomplete="off" style="max-width: 700px;">
+        <div class="input-group shadow-sm">
+            <span class="input-group-text bg-light"><i class="fas fa-search"></i></span>
+            <input type="text" id="searchInput" name="SearchTerm" value="@Model.SearchTerm" class="form-control" placeholder="Search by ID, Name, or Email" />
+
+            <span class="input-group-text bg-light"><i class="fas fa-filter"></i></span>
+            <select class="form-select" name="SelectedRole" aria-label="Filter by Role" style="max-width: 200px;">
+                <option value="">-- All Roles --</option>
+                @foreach (var role in Model.AllRoles)
+                {
+                    var isSelected = Model.SelectedRole.HasValue && role == Model.SelectedRole.Value;
+                    <option value="@role" selected="@(isSelected ? "selected" : null)">
+                        @role.ToString()
+                    </option>
+                }
+            </select>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+
+        <div id="suggestions" class="list-group position-absolute shadow-sm border rounded" style="z-index: 1000; top: 100%; left: 0; right: 0;"></div>
+    </form>
+
+    <!-- Users Table -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover table-striped table-responsive-md mb-0 align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Description</th>
+                        <th class="text-center" style="width: 180px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Users.Any())
+                    {
+                        foreach (var user in Model.Users)
+                        {
+                            var roleColor = user.Role switch
+                            {
+                                Models.UserRole.Admin => "danger",
+                                Models.UserRole.Faculty => "warning",
+                                Models.UserRole.Student => "info",
+                                _ => "secondary"
+                            };
+                            <tr>
+                                <td>@user.Id</td>
+                                <td>@user.Name</td>
+                                <td>@user.Email</td>
+                                <td><span class="badge bg-@roleColor">@user.Role</span></td>
+                                <td>@user.Description</td>
+                                <td class="text-center">
+                                    <a asp-page="Edit" asp-route-id="@user.Id" class="btn btn-warning btn-sm me-1" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-page="Delete" asp-route-id="@user.Id" class="btn btn-danger btn-sm" title="Delete" onclick="return confirm('Are you sure?');">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-3">No users found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const suggestionsBox = document.getElementById('suggestions');
+        let debounceTimeout;
+
+        searchInput.addEventListener('input', async function () {
+            const query = this.value.trim();
+            if (query.length < 2) {
+                suggestionsBox.innerHTML = '';
+                suggestionsBox.style.display = 'none';
+                return;
+            }
+
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(async () => {
+                try {
+                    const response = await fetch(`/Admin/Users?handler=SearchUsers&term=${encodeURIComponent(query)}`);
+                    if (!response.ok) throw new Error('Network error');
+                    const results = await response.json();
+
+                    if (results.length === 0) {
+                        suggestionsBox.innerHTML = '';
+                        suggestionsBox.style.display = 'none';
+                        return;
+                    }
+
+                    suggestionsBox.innerHTML = results.map(u =>
+                        `<button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-id="${u.id}">
+                            <span><i class="fas fa-user me-2 text-primary"></i>${u.name}</span>
+                            <small class="text-muted">${u.email}</small>
+                        </button>`
+                    ).join('');
+                    suggestionsBox.style.display = 'block';
+
+                    suggestionsBox.querySelectorAll('button').forEach(button => {
+                        button.addEventListener('click', () => {
+                            searchInput.value = button.textContent;
+                            suggestionsBox.innerHTML = '';
+                            suggestionsBox.style.display = 'none';
+                        });
+                    });
+                } catch (error) {
+                    console.error(error);
+                    suggestionsBox.innerHTML = '';
+                    suggestionsBox.style.display = 'none';
+                }
+            }, 300);
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!suggestionsBox.contains(e.target) && e.target !== searchInput) {
+                suggestionsBox.style.display = 'none';
+            }
+        });
+    </script>
+}
